@@ -87,6 +87,9 @@ namespace BulkyWeb.Areas.Customer.Controllers
             ShoppingCartVM.OrderHeader.OrderDate = System.DateTime.Now;
             ShoppingCartVM.OrderHeader.ApplicationUserId = userId;
 
+            ModelState.Remove("ShoppingCartList");
+            ModelState.Remove("OrderHeader.ApplicationUserId");
+
 
 
             ApplicationUser applicationUser = _unitOfWork.ApplicationUser.Get(u => u.Id == userId);
