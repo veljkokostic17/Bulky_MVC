@@ -11,7 +11,13 @@ namespace Bulky.Utilities
     {
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            //logic for email??
+
+            Console.WriteLine("Email would be sent:");
+            Console.WriteLine(email);
+            Console.WriteLine(subject);
+            Console.WriteLine(htmlMessage);
+
+
             return Task.CompletedTask;
         }
     }
