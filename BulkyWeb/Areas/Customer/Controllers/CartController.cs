@@ -109,8 +109,15 @@ namespace BulkyWeb.Areas.Customer.Controllers
                 ShoppingCartVM.OrderHeader.OrderStatus = SD.StatusApproved;
             }
 
+            if (!ModelState.IsValid)
+            {
+                return View("Summary", ShoppingCartVM);
+            }
+            else
+            { 
             _unitOfWork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
             _unitOfWork.Save();
+            }
             foreach (var cart in ShoppingCartVM.ShoppingCartList)
             {
                 OrderDetail orderDetail = new()
@@ -129,7 +136,7 @@ namespace BulkyWeb.Areas.Customer.Controllers
             {   //regular customer
                 //stripe logic
 
-                var domain = "https://localhost:7160/";
+                var domain = Request.Scheme+ "://" + Request.Host.Value + "/"; 
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
                     SuccessUrl = domain + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
@@ -210,9 +217,9 @@ namespace BulkyWeb.Areas.Customer.Controllers
             var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked: true);
             if (cartFromDb.Count <= 1)
             {
-                _unitOfWork.ShoppingCart.Remove(cartFromDb);
                 HttpContext.Session.SetInt32(SD.SessionCart, _unitOfWork.ShoppingCart.
                     GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count()-1);
+                _unitOfWork.ShoppingCart.Remove(cartFromDb);
             }
             else
             {
